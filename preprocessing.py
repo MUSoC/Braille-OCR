@@ -10,9 +10,13 @@ dilation=cv2.dilate(gaus,kernel,iterations=1)
 opening= cv2.morphologyEx(dilation,cv2.MORPH_OPEN,kernel)
 clahe = cv2.createCLAHE(clipLimit=50.0, tileGridSize=(1,1000))
 cl1 = clahe.apply(dilation)
-#saving the processed image
-cv2.imwrite('C:\Users\Mahe\Desktop\cl1.jpg',cl1)
+ret,thresh2 = cv2.threshold(cl1,100,255,cv2.THRESH_BINARY_INV)
 
+se2 = cv2.getStructuringElement(cv2.MORPH_RECT, (3,3))
+mask = cv2.morphologyEx(thresh2, cv2.MORPH_OPEN, se2)
+mask = np.dstack([mask, mask, mask]) 
+rows,cols=thresh2.shape
+cv2.imwrite('C:\Users\Mahe\Desktop\mask.jpg',mask)
 
 
 # cropping 
@@ -38,7 +42,9 @@ def click_and_crop(event, x, y, flags, param):
  
                 # draw a rectangle around the region of interest
                 cv2.rectangle(image, refPt[0], refPt[1], (0, 255, 0), 2)
-                cv2.namedWindow('image',cv2.WINDOW_AUTOSIZE)
+                
+                cv2.namedWindow('image',cv2.WINDOW_NORMAL)
+                cv2.resizeWindow('image',  rows,cols)
                 cv2.imshow("image", image)
 
 
@@ -49,14 +55,15 @@ args = vars(ap.parse_args())
 # load the image, clone it, and setup the mouse callback function
 image = cv2.imread(args["image"])
 clone = image.copy()
-cv2.namedWindow("image", cv2.WINDOW_AUTOSIZE)
+cv2.namedWindow("image" ,cv2.WINDOW_NORMAL)
+cv2.resizeWindow('image',  rows,cols)
 cv2.setMouseCallback("image", click_and_crop)
  
 # keep looping until the 'q' key is pressed
 while True:
         # display the image and wait for a keypress
-        cv2.namedWindow("image", cv2.WINDOW_AUTOSIZE) 
-        #cv2.resizeWindow('image',  934,416)
+        cv2.namedWindow("image" ,cv2.WINDOW_NORMAL) 
+        cv2.resizeWindow('image',  rows,cols)
         cv2.imshow("image", image)
         key = cv2.waitKey(1) & 0xFF
  
@@ -68,17 +75,18 @@ while True:
         elif key == ord("c"):
                 break
  
-# if there are two reference points, then crop the region of interest
-# from the image and display it
+# if there are two reference points, then crop the region of interest from the image and display it
 if len(refPt) == 2:
         roi = clone[refPt[0][1]:refPt[1][1], refPt[0][0]:refPt[1][0]]
-        cv2.namedWindow("ROI",cv2.WINDOW_AUTOSIZE)
-        #cv2.resizeWindow('ROI',refPt[0][1]-refPt[1][1], refPt[0][0]-refPt[1][0] )
-        
-        cv2.imshow("ROI", roi)   
+        cv2.imwrite('roi.jpg',roi)
 
-
-
+        cv2.namedWindow("ROI" ,cv2.WINDOW_NORMAL)
+        cv2.resizeWindow('ROI',refPt[0][1]-refPt[1][1], refPt[0][0]-refPt[1][0] )
+        cv2.imshow("ROI", roi)
+       
 cv2.waitKey(0)
 cv2.destroyAllWindows()
+
+
+
 
