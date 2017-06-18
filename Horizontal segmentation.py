@@ -19,6 +19,7 @@ img = cv2.imread('horizontal2.jpg')
 edges = cv2.Canny(img,50,150,apertureSize = 3)
 
 lines = cv2.HoughLines(edges,1,np.pi/180,200)
+m={}
 for i in range(0,60):
     for rho,theta in lines[i]:
         a = np.cos(theta)
@@ -29,12 +30,57 @@ for i in range(0,60):
         y1 = int(y0 + 2000*(a))
         x2 = int(x0 - 2000*(-b))
         y2 = int(y0 - 2000*(a))
-        print (x1,y1),(x2,y2)
+        
+    m['line_'+str(i)]=(x1,y1),(x2,y2)        
+       
 
-        cv2.line(img,(x1,y1),(x2,y2),(0,0,255),2)
+k={}
+for i in range (0,59):
+    h=m['line_'+str(i)][1][1]
+    if m['line_'+str(i+1)][1][1] in range(h,(h+213)):
+        del m['line_'+str(i)]
+        
+    
+#for i in range(0,len(m.keys())):
 
-cv2.imshow('new', img)
-cv2.imwrite('hough_lines',img)
+ #   k['line_'+str(i)]=(m.keys())[i]
+
+#print k
+
+for i in range (0,len( m.keys())):
+    try:
+        cv2.line(th2,m['line_'+str(i)][0],m['line_'+str(i)][1],(0,0,255),2)
+    except KeyError:
+        print("Key not available")
+         
+
+
+
+#for i in range(0,60):
+    
+ #   print ("line_"+str(i),':',m['line_'+str(i)])
+
+#j=((m['line_'+str(1)][0][1]))
+#print j
+#print m['line_'+str(0)][0][1]
+#g= img[m['line_'+str(0)][0][1]:j,m['line_'+str(0)][0][0]:m['line_'+str(0)][1][0]]
+
+
+
+#for i in range(0,59):
+    #k['var_'+str(i)]= img[m['line_'+str(i)][0][1]:m['line_'+str(i+1)][0][1],m['line_'+str(i)][0][0]:m['line_'+str(i)][1][0]]
+    #k['var_'+str(i)]= img[m['line_'+str(i)][0][1]:m['line_'+str(i+1)][1][1],m['line_'+str(i)][0][0]:m['line_'+str(i+1)][1][0]]
+   
+#cv2.imshow('part 12', g)
+
+#cv2.imshow('part 1', k['var_'+str(0)])
+#cv2.imshow('new', img)
+cv2.imwrite('hough_lines.jpg',th2)
+
+
+
+
 
 cv2.waitKey(0)
 cv2.destroyAllWindows()
+
