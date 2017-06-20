@@ -1,23 +1,25 @@
 import cv2
 import numpy as np
+import math
 th2=cv2.imread('roi.jpg')
 horizontal = th2
-#vertical = th2
+
 rows,cols,W = th2.shape
+print th2.shape
 horizontalsize = cols
 horizontalStructure = cv2.getStructuringElement(cv2.MORPH_RECT, (horizontalsize,20))
-#horizontal = cv2.erode(horizontal, horizontalStructure, (-1, -1))
 horizontal = cv2.dilate(horizontal, horizontalStructure, (-1, -1))
-
-#cv2.imshow("horizontal", horizontal)
 cv2.imwrite("horizontal2.jpg", horizontal)
 
 
 
 img = cv2.imread('horizontal2.jpg')
-#gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+
+#defining the edges
 edges = cv2.Canny(img,50,150,apertureSize = 3)
 
+
+#finding the end points of the hough lines
 lines = cv2.HoughLines(edges,1,np.pi/180,200)
 m={}
 for i in range(0,60):
@@ -34,53 +36,37 @@ for i in range(0,60):
     m['line_'+str(i)]=(x1,y1),(x2,y2)        
        
 
-k={}
-for i in range (0,59):
-    h=m['line_'+str(i)][1][1]
-    if m['line_'+str(i+1)][1][1] in range(h,(h+213)):
-        del m['line_'+str(i)]
-        
+
+#removing extra lines in between the rows
+for i in range(0,59):
+    try:
+        dx=m['line_'+str(i+1)][0][0]-m['line_'+str(i)][0][0]
+        dy=m['line_'+str(i+1)][0][1]-m['line_'+str(i)][0][1]
+        distance =math.sqrt(dx*dx+dy*dy)
+        if distance <213:
+            del m['line_'+str(i)]
+            
+    except KeyError:
+        pass          
     
-#for i in range(0,len(m.keys())):
 
- #   k['line_'+str(i)]=(m.keys())[i]
+#printing m dictionary     
+for i in range(0,len(m.keys())):
+    try:
+        print ("m['line_'+",i ,']:',m['line_'+str(i)])
+    except KeyError:
+        pass
 
-#print k
 
+#drawing line
 for i in range (0,len( m.keys())):
     try:
-        cv2.line(th2,m['line_'+str(i)][0],m['line_'+str(i)][1],(0,0,255),2)
+        cv2.line(th2,m['line_'+str(i)][0],m['line_'+str(i)][1],(0,0,255),3)
     except KeyError:
-        print("Key not available")
+        pass
          
 
-
-
-#for i in range(0,60):
-    
- #   print ("line_"+str(i),':',m['line_'+str(i)])
-
-#j=((m['line_'+str(1)][0][1]))
-#print j
-#print m['line_'+str(0)][0][1]
-#g= img[m['line_'+str(0)][0][1]:j,m['line_'+str(0)][0][0]:m['line_'+str(0)][1][0]]
-
-
-
-#for i in range(0,59):
-    #k['var_'+str(i)]= img[m['line_'+str(i)][0][1]:m['line_'+str(i+1)][0][1],m['line_'+str(i)][0][0]:m['line_'+str(i)][1][0]]
-    #k['var_'+str(i)]= img[m['line_'+str(i)][0][1]:m['line_'+str(i+1)][1][1],m['line_'+str(i)][0][0]:m['line_'+str(i+1)][1][0]]
-   
-#cv2.imshow('part 12', g)
-
-#cv2.imshow('part 1', k['var_'+str(0)])
-#cv2.imshow('new', img)
+ 
 cv2.imwrite('hough_lines.jpg',th2)
-
-
-
-
-
 cv2.waitKey(0)
 cv2.destroyAllWindows()
-
