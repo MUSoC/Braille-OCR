@@ -36,37 +36,3 @@ for i in range(0,60):
     m['line_'+str(i)]=(x1,y1),(x2,y2)        
        
 
-
-#removing extra lines in between the rows
-for i in range(0,59):
-    try:
-        dx=m['line_'+str(i+1)][0][0]-m['line_'+str(i)][0][0]
-        dy=m['line_'+str(i+1)][0][1]-m['line_'+str(i)][0][1]
-        distance =math.sqrt(dx*dx+dy*dy)
-        if distance <213:
-            del m['line_'+str(i)]
-            
-    except KeyError:
-        pass          
-    
-
-#printing m dictionary     
-for i in range(0,len(m.keys())):
-    try:
-        print ("m['line_'+",i ,']:',m['line_'+str(i)])
-    except KeyError:
-        pass
-
-
-#drawing line
-for i in range (0,len( m.keys())):
-    try:
-        cv2.line(th2,m['line_'+str(i)][0],m['line_'+str(i)][1],(0,0,255),3)
-    except KeyError:
-        pass
-         
-
- 
-cv2.imwrite('hough_lines.jpg',th2)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
