@@ -44,7 +44,7 @@ for x in range(0, len(lines)):
 cv2.imwrite('hough.jpg',img)
 
 w=cv2.imread('hough.jpg')
-cv2.imshow('hell',pax)
+cv2.imshow('vertical hough lines',pax)
 
 print m
 
