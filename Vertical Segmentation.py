@@ -3,7 +3,7 @@ import numpy as np
 import math
 
 
-img=cv2.imread('part6.jpg')
+img=cv2.imread('part7.jpg')
 rows,cols,w = img.shape
 
 #removing red pixels
@@ -13,7 +13,7 @@ for i in range(rows):
          if pixel[2]>pixel[1] and pixel[2]>pixel[0]:
              img[i][j]=[0,0,0]
 
-cv2.imwrite('img6.jpg',img)
+cv2.imwrite('img7.jpg',img)
 
 
 #dilating
@@ -75,7 +75,7 @@ for i in range(len(sorted_m)-1):
     
 
 for i in range(len(p)):
-    if p[i].size in range(3500,5000):
+    if p[i].size in range(0,5000):
         
         RD= distance(sorted_m[i+1][0] ,sorted_m[i+2][0])
         LD=distance( sorted_m[i-1][0],sorted_m[i][0])
@@ -104,51 +104,9 @@ for i in range(len(p)):
         cv2.imwrite('character['+str(i)+'].jpg',resized_image)
 
 
-
-print "char[0] size:",p[0].size
-print "char[14] size:",p[14].size
-print "char[20] size:",p[20].size
-print "char[26] size:",p[26].size
-print "char[40] size:",p[40].size
-print "char[24] size:",p[24].size
-print "char[34] size:",p[34].size
-print "char[36] size:",p[36].size
-
-l=[p[0].size,p[14].size,p[20].size,p[26].size,p[40].size,p[24].size,p[34].size,p[36].size]
-print "min:",min(l)
-print "max:",max(l)
-print p[20].shape
-
-
-
-print "*********************"
-
-print "char[10] size:",p[10].size
-print "char[12] size:",p[12].size
-print "char[2] size:",p[2].size
-print "char[6] size:",p[6].size
-print "char[8] size:",p[8].size
-print "char[4] size:",p[4].size
-print "char[16] size:",p[16].size
-print "char[18] size:",p[18].size
-print "char[22] size:",p[22].size
-print "char[28] size:",p[28].size
-print "char[30] size:",p[30].size
-print "char[38] size:",p[38].size
-print "char[32] size:",p[32].size
-print "char[42] size:",p[42].size
-
-b=[p[10].size,p[12].size,p[2].size,p[6].size,p[8].size,p[4].size,p[16].size,p[18].size,p[22].size,p[28].size,p[30].size,p[38].size,p[32].size,p[42].size]
-print "min:",min(b)
-print "max:",max(b)
-print p[22].shape
-
-
-        
-
-print len(p)    
-
 cv2.waitKey(0)
+cv2.destroyAllWindows()
+
 
 
 

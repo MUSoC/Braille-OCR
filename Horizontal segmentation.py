@@ -3,12 +3,9 @@ import numpy as np
 import math
 
 th2=cv2.imread('roi.jpg')
-horizontal = th2
-
-rows,cols,W = th2.shape
-horizontalsize = cols
-horizontalStructure = cv2.getStructuringElement(cv2.MORPH_RECT, (horizontalsize,20))
-horizontal = cv2.dilate(horizontal, horizontalStructure, (-1, -1))
+r,c,w=th2.shape
+horizontalStructure = cv2.getStructuringElement(cv2.MORPH_RECT, (c,20))
+horizontal = cv2.dilate(th2, horizontalStructure, (-1, -1))
 cv2.imwrite("horizontal2.jpg", horizontal)
 
 
@@ -68,7 +65,9 @@ p=[]
 for i in range (0,29):
     p.append( th2[sorted_m[i][0][1]:sorted_m[i+1][0][1],sorted_m[i][0][0]:sorted_m[i][1][0]])
 
-
-cv2.imshow('part3',p[3])
+#for testing for 1 row
+cv2.imshow('part7',p[7])
+cv2.imwrite('character7',p[7])
 cv2.waitKey(0)
 cv2.destroyAllWindows()
+
