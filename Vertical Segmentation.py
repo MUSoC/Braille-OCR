@@ -2,7 +2,6 @@ import cv2
 import numpy as np
 import math
 
-
 img=cv2.imread('part7.jpg')
 rows,cols,w = img.shape
 
