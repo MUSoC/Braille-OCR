@@ -9,7 +9,6 @@ horizontal = cv2.dilate(th2, horizontalStructure, (-1, -1))
 cv2.imwrite("horizontal2.jpg", horizontal)
 
 
-
 img = cv2.imread('horizontal2.jpg')
 
 #defining the edges
