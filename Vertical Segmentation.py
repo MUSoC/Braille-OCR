@@ -92,12 +92,24 @@ for i in range(len(p)):
             vis[:h2, w1:w1+w2,:3] = black_image
             resized_image=cv2.resize(vis,(40,50))
             p[i]=resized_image
+            rows,cols,w=p[i].shape
+            for x in range(rows):
+                for y in range(cols):
+                     pixel=p[i][x][y]
+                     if pixel[2]>pixel[1] and pixel[2]>pixel[0]:
+                         p[i][x][y]=[0,0,0]
             cv2.imwrite('character['+str(i)+'].jpg',p[i])
         elif LD>RD:
             vis[:h2, :w2,:3] = black_image
             vis[:h1, w2:w1+w2,:3] = p[i]
             resized_image=cv2.resize(vis,(40,50))
             p[i]=resized_image
+            rows,cols,w=p[i].shape
+            for x in range(rows):
+                for y in range(cols):
+                     pixel=p[i][x][y]
+                     if pixel[2]>pixel[1] and pixel[2]>pixel[0]:
+                         p[i][x][y]=[0,0,0]
             cv2.imwrite('character['+str(i)+'].jpg',p[i])
     else:
         resized_image=cv2.resize(p[i],(40,50))
@@ -106,6 +118,7 @@ for i in range(len(p)):
 
 cv2.waitKey(0)
 cv2.destroyAllWindows()
+
 
 
 
