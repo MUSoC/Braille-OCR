@@ -1,7 +1,8 @@
+from __future__ import print_function
 import cv2
 import numpy as np
 import math
-
+import string
 
 
 img=cv2.imread('part7.jpg')
@@ -45,10 +46,11 @@ for x in range(0, len(lines)):
 #sorting list m as per x coordinate in the tuple
 sorted_m=sorted(m, key=lambda x: x[0][0])
 
+'''
 #printing sorted_m
 for i in range(len(sorted_m)):
     print "sorted_m[", i , "]:", sorted_m[i]
-
+'''
 
 #drawing lines
 for i in range(len(sorted_m)):
@@ -76,61 +78,98 @@ for i in range(len(sorted_m)-1):
     p.append(hough_lines[sorted_m[i][1][1]:sorted_m[i][0][1],sorted_m[i][0][0]: sorted_m[i+1][0][0]])
     
 
+print (p[1].shape)
+print (p[3].shape)
+print (p[7].shape)
+print (p[9].shape)
+print (p[11].shape)
+print (p[13].shape)
+print (p[15].shape)
+print (p[17].shape)
+print (p[24].shape)
+print (p[26].shape)
+print (p[28].shape)
+print (p[30].shape)
+print (p[32].shape)
+print (p[36].shape)
+
+print ("****************")
+print (p[5].shape)
+print (p[19].shape)
+print (p[22].shape)
+print (p[34].shape)
+
+
+pxl=[]
 for i in range(len(p)):
-    if p[i].size in range(0,5000):
+    if p[i].shape[1] in range(7,100):
+        pxl.append(p[i])
+        
+for i in range(len(pxl)):
+    cv2.imwrite('character['+str(i)+'].jpg',pxl[i])
+        
+for i in range(len(pxl)):
+    if pxl[i].size in range(1300,5000):
         
         RD= distance(sorted_m[i+1][0] ,sorted_m[i+2][0])
         LD=distance( sorted_m[i-1][0],sorted_m[i][0])
             
-        h1, w1 = p[i].shape[:2]
-        print h1,w1
-        black_image = np.zeros((p[i].shape[0], 42-p[i].shape[1],3))
+        h1, w1 = pxl[i].shape[:2]
+        black_image = np.zeros((pxl[i].shape[0], 42-pxl[i].shape[1],3))
         h2, w2 = black_image.shape[:2]
-        print h2,w2
+        
 
         #create empty matrix
         vis = np.zeros((max(h1, h2), w1+w2,3), np.uint8)
         if RD>LD:
             #combine 2 images
-            vis[:h1, :w1,:3] = p[i]
+            vis[:h1, :w1,:3] = pxl[i]
             vis[:h2, w1:w1+w2,:3] = black_image
             resized_image=cv2.resize(vis,(40,50))
-            p[i]=resized_image
-            rows,cols,w=p[i].shape
+            pxl[i]=resized_image
+            rows,cols,w=pxl[i].shape
             for x in range(rows):
                 for y in range(cols):
-                     pixel=p[i][x][y]
+                     pixel=pxl[i][x][y]
                      if pixel[2]>pixel[1] and pixel[2]>pixel[0]:
-                         p[i][x][y]=[0,0,0]
+                         pxl[i][x][y]=[0,0,0]
             
         elif LD>RD:
             vis[:h2, :w2,:3] = black_image
-            vis[:h1, w2:w1+w2,:3] = p[i]
+            vis[:h1, w2:w1+w2,:3] = pxl[i]
             resized_image=cv2.resize(vis,(40,50))
-            p[i]=resized_image
-            rows,cols,w=p[i].shape
+            pxl[i]=resized_image
+            rows,cols,w=pxl[i].shape
             for x in range(rows):
                 for y in range(cols):
-                     pixel=p[i][x][y]
+                     pixel=pxl[i][x][y]
                      if pixel[2]>pixel[1] and pixel[2]>pixel[0]:
-                         p[i][x][y]=[0,0,0]
+                         pxl[i][x][y]=[0,0,0]
             
     else:
-        resized_image=cv2.resize(p[i],(40,50))
-        p[i]=resized_image
+        resized_image=cv2.resize(pxl[i],(40,50))
+        pxl[i]=resized_image
+
+
+
+
+
 
 w=[]
 cvt=[]
-for i in range(len(p)):
-    cv2.line(p[i],((p[i].shape[1])/2,0),(((p[i].shape[1])/2),p[i].shape[0]),(0,0,255),2)
-    cv2.line(p[i],(0,(p[i].shape[0])/3),(40,(p[i].shape[0])/3),(0,0,255),2)
-    cv2.line(p[i],(0,(2*(p[i].shape[0])/3)),(40,(2*(p[i].shape[0])/3)),(0,0,255),2)
-    cv2.imwrite('character['+str(i)+'].jpg',p[i])
+
+for i in range(len(pxl)):
+    cv2.line(pxl[i],((pxl[i].shape[1])/2,0),(((pxl[i].shape[1])/2),pxl[i].shape[0]),(0,0,255),2)
+    cv2.line(pxl[i],(0,(pxl[i].shape[0])/3),(40,(pxl[i].shape[0])/3),(0,0,255),2)
+    cv2.line(pxl[i],(0,(2*(pxl[i].shape[0])/3)),(40,(2*(pxl[i].shape[0])/3)),(0,0,255),2)
+    cv2.imwrite('character['+str(i)+'].jpg',pxl[i])
 
     #dividing each image into 6 equal rois
-    w.append((p[i][0:(p[i].shape[0])/3,0:(p[i].shape[1])/2],     p[i][(p[i].shape[0])/3:2*((p[i].shape[0])/3),0:(p[i].shape[1])/2],        p[i][2*((p[i].shape[0])/3):p[i].shape[0],0:(p[i].shape[1])/2] ,     p[i][0:(p[i].shape[0])/3,(p[i].shape[1])/2:(p[i].shape[1])],     p[i][(p[i].shape[0])/3:2*((p[i].shape[0])/3),(p[i].shape[1])/2:(p[i].shape[1])] ,      p[i][2*(p[i].shape[0])/3:p[i].shape[0],(p[i].shape[1])/2:(p[i].shape[1])]))
+    w.append((pxl[i][0:(pxl[i].shape[0])/3,0:(pxl[i].shape[1])/2],     pxl[i][(pxl[i].shape[0])/3:2*((pxl[i].shape[0])/3),0:(pxl[i].shape[1])/2],        pxl[i][2*((pxl[i].shape[0])/3):pxl[i].shape[0],0:(pxl[i].shape[1])/2] ,     pxl[i][0:(pxl[i].shape[0])/3,(pxl[i].shape[1])/2:(pxl[i].shape[1])],     pxl[i][(pxl[i].shape[0])/3:2*((pxl[i].shape[0])/3),(pxl[i].shape[1])/2:(pxl[i].shape[1])] ,      pxl[i][2*(pxl[i].shape[0])/3:pxl[i].shape[0],(pxl[i].shape[1])/2:(pxl[i].shape[1])]))
     cvt.append([0,0,0,0,0,0])
 q=0
+
+
 
 for i in range(len(w)):
     for j in range(6):
@@ -141,10 +180,62 @@ for i in range(len(w)):
                     q=1
                     cvt[i][j]=1
                     continue
+
 for i in range(len(cvt)):
     
     a="".join(map(str,cvt[i]))
     cvt[i]=a
+
+
+
+alphabets=str(100000110000100100100110100010110100110110110010010100010110101000111000101100101110101010111100111110111010011100011110101001111001010111101101101111101011)
+d={}
+alpha={}
+for i in range(26):
+    alpha[string.lowercase[i]]=(alphabets[i*6:(i+1)*6])
+
+print (alpha)
+print ("**************")
+n={'0':'010110', '1':'100000', '2':'110000', '3':'100100' ,'4':'100110'  ,'5':'100010' ,'6':'110100' ,'7':'110110'   ,'8':'110010' ,'9': '010100'}
+d['number']='001111'
+d['capital']='000001'
+d['decimal']='000101'
+c={',':'010000', '.':'010011','!':'011010','?':'011001',';':'011000',' ':'000000'}
+
+
+print (cvt)
+print ("**************")
+print (n)
+print ("**************")
+print (d)
+print ("**************")
+print (c)
+
+
+
+
+
+for i in range(1,len(cvt)):
+    if cvt[i-1]==d['number']:
+            print (n.keys()[n.values().index(cvt[i])],end = '')
+            continue
+            
+
+    elif cvt[i-1]==d['capital']:
+            z=string.lowercase.index(alpha.keys()[alpha.values().index(cvt[i])])
+            print (string.uppercase[z], end='')
+            continue
+
+    else:
+            for ch,valu in alpha.iteritems():
+                if cvt[i]==valu:
+                    print (ch, end='')
+                    continue
+
+            for ch,valu in c.iteritems():
+                if cvt[i]==valu:
+                    print (ch, end='')
+                    continue
 
 
 
