@@ -3,49 +3,11 @@ import cv2
 import numpy as np
 import math
 import string
-import re
-from textblob import TextBlob
-from StringIO import StringIO
 import sys
-from collections import Counter
-
-def words(text): return re.findall(r'\w+', text.lower())
-
-WORDS = Counter(words(open('D:/big.txt').read()))
-
-def P(word, N=sum(WORDS.values())): 
-    "Probability of `word`."
-    return WORDS[word] / N
-
-def correction(word): 
-    "Most probable spelling correction for word."
-    return max(candidates(word), key=P)
-
-def candidates(word): 
-    "Generate possible spelling corrections for word."
-    return (known([word]) or known(edits1(word)) or known(edits2(word)) or [word])
-
-def known(words): 
-    "The subset of `words` that appear in the dictionary of WORDS."
-    return set(w for w in words if w in WORDS)
-
-def edits1(word):
-    "All edits that are one edit away from `word`."
-    letters    = 'abcdefghijklmnopqrstuvwxyz'
-    splits     = [(word[:i], word[i:])    for i in range(len(word) + 1)]
-    deletes    = [L + R[1:]               for L, R in splits if R]
-    transposes = [L + R[1] + R[0] + R[2:] for L, R in splits if len(R)>1]
-    replaces   = [L + c + R[1:]           for L, R in splits if R for c in letters]
-    inserts    = [L + c + R               for L, R in splits for c in letters]
-    return set(deletes + transposes + replaces + inserts)
-
-def edits2(word): 
-    "All edits that are two edits away from `word`."
-    return (e2 for e1 in edits1(word) for e2 in edits1(e1))
 
 
 
-
+f=open("C:\Users\Mahe\Desktop\MUSOC.txt","w+")
 
 for i in range(4):
     img=cv2.imread('part'+str(i)+'.jpg')
@@ -59,8 +21,8 @@ for i in range(4):
     kernel = np.ones((100,10),np.uint8)
     dilation = cv2.dilate(threshold,kernel,iterations = 1)
 
-    cv2.imwrite('C:\Users\Mahe\Desktop\W3 characters\dilatedpart1.jpg', dilation)
-    k=cv2.imread('C:\Users\Mahe\Desktop\W3 characters\dilatedpart1.jpg')
+    cv2.imwrite('C:\Users\Mahe\Desktop\W3 characters\dilatedpart.jpg', dilation)
+    k=cv2.imread('C:\Users\Mahe\Desktop\W3 characters\dilatedpart.jpg')
 
     #defining the edges
     edges = cv2.Canny(k,50,150,apertureSize = 3)
@@ -298,69 +260,45 @@ for i in range(4):
     
     for ch,valu in alpha.iteritems():
             if cvt[0]==valu:
-                    print (ch, end='')
+                    f.write (ch)
                     continue
 
     for ch,valu in c.iteritems():
             if cvt[0]==valu:
-                    print (ch, end='')
+                    f.write (ch)
                     continue 
 
 
     for i in range(1,len(cvt)):
             try:
                     if cvt[i-1]==d['numbers']:
-                                    print (n.keys()[n.values().index(cvt[i])],end = '')
+                                    f.write (n.keys()[n.values().index(cvt[i])])
                                     continue
                                     
 
                     elif cvt[i-1]==d['capital']:
                                     z=string.lowercase.index(alpha.keys()[alpha.values().index(cvt[i])])
-                                    print (string.uppercase[z], end='')
+                                    f.write (string.uppercase[z])
                                     continue
 
                     else:
                                     for ch,valu in alpha.iteritems():
                                             if cvt[i]==valu:
-                                                    print (ch, end='')
+                                                    f.write (ch)
                                                     continue
 
                                     for ch,valu in c.iteritems():
                                             if cvt[i]==valu:
-                                                    print (ch, end='')
+                                                    f.write (ch)
                                                     continue
 
             except ValueError:
                     pass
 
-    print (' ', end='')
-
-
     
+    f.write (' ')
 
-    old_stdout = sys.stdout
-    result = StringIO()
-    sys.stdout = result
-    sys.stdout = old_stdout
-    result_string = result.getvalue()
-    #b=TextBlob(result_string)
-    print (correction(str(result_string)), end='')
-
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
-
-
-
-
-
-
-
-
-
-
-
-
-
+f.close()
 
 
 
