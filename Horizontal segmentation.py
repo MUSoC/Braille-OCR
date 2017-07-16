@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 import math
 
-th2=cv2.imread('mask.jpg')
+th2=cv2.imread('roi.jpg')
 r,c,w=th2.shape
 horizontalStructure = cv2.getStructuringElement(cv2.MORPH_RECT, (c+2000,13))
 horizontal = cv2.dilate(th2, horizontalStructure, (-1, -1))
