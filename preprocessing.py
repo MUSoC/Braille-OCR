@@ -42,7 +42,7 @@ def click_and_crop(event, x, y, flags, param):
                 cropping = False
  
                 # draw a rectangle around the region of interest
-                cv2.rectangle(mask, refPt[0], refPt[1], (0, 0, 255), 2)
+                cv2.rectangle(mask, refPt[0], refPt[1], (255, 255, 255), 2)
                 cv2.namedWindow('image',cv2.WINDOW_NORMAL)
                 cv2.resizeWindow('image',  rows,cols)
                 cv2.imshow("image", mask)
